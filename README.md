@@ -52,7 +52,7 @@ Install the following extensions from within Visual Studio Code:
 
 ### 4. Open the Repository in a Dev Container
 
-1. Launch Visual Studio Code and open this repository.
+1. Launch Visual Studio Code and open this repository. Ensure that Docker Desktop is running, as the Docker Engine must be active before proceeding.
 2. Press `Ctrl + Shift + P` to bring up the VSCode command palette and select `Dev Containers: Reopen in Container`.
     - This will automatically:
         - Copy the `src` folder to the Docker container’s workspace.
@@ -78,8 +78,16 @@ Install the following extensions from within Visual Studio Code:
 
 -   Ensure **VcXsrv** is running and that the `DISPLAY` environment variable is correctly set.
     -   You can verify this by running the `xclock` command in the container to check if the clock GUI is displayed on your Windows machine.
-    -   To use the `xclock` command, install it by adding the `x11-apps` package in the system dependencies section of the `Dockerfile`.
--   If the display is not working, refer to [VcXsrv support](https://sourceforge.net/projects/vcxsrv/support) for more information.
+    -   If the `xclock` command is not available, you can install it by adding the `x11-apps` package in the system dependencies section of the `Dockerfile`.
+-   The `install_and_start_vcxsrv.bat` (Windows) or `x11_forwarding_linux.sh` (Linux) scripts may sometimes retrieve an incorrect local IPv4 address, which can prevent the GUI from displaying, even though the program is running. To resolve this issue:
+    1. Manually find your local IPv4 address by running:
+        - `ipconfig` in the Windows Command Prompt / Terminal, or
+        - `ifconfig` in the Linux Terminal.
+    2. Update the `DISPLAY` environment variable in the `.env` file located in the project root with your correct IPv4 address before opening the project in a Dev Container. For example:  
+       `DISPLAY=your_ipv4_address:0.0`
+    3. If the above method does not work, try setting the `DISPLAY` variable in the `.env` file as:  
+       `DISPLAY=:0`
+    4. If the display is still not functioning, refer to the [VcXsrv support page](https://sourceforge.net/projects/vcxsrv/support) for further assistance.
 
 ---
 

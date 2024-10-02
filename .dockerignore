@@ -5,3 +5,8 @@ docker-compose.yml
 Dockerfile
 *.bat
 *.sh
+
+# Github exclusions
+.gitignore
+LICENSE
+README.md

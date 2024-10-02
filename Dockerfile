@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     g++ \
     python3-dev \
     swig \
+    x11-apps \
     && rm -rf /var/lib/apt/lists/*
 
 # Install gymnasium and additional dependencies
