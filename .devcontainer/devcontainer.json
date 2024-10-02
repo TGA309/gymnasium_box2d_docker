@@ -1,0 +1,14 @@
+{
+  "name": "Attach to Gymnasium Container",
+  "dockerComposeFile": "../docker-compose.yml",    // Reference your existing Docker Compose
+  "service": "gym-container",                   // Name of the service in docker-compose.yml
+  "workspaceFolder": "/workspace",              // Set the workspace folder
+  "remoteUser": "root",                         // Specify the user inside the container
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  }
+}

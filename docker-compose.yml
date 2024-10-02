@@ -1,0 +1,13 @@
+services:
+  gym-container:
+    build: .
+    container_name: gym_container
+    environment:
+      - .env
+    volumes:
+      - ./src:/workspace/src
+    network_mode: "host"
+    ipc: "host"
+    privileged: true
+    tty: true
+    stdin_open: true
