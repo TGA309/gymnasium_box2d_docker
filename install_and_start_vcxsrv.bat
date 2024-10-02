@@ -16,7 +16,8 @@ if errorlevel 1 (
 :: Check if running as administrator
 net session >nul 2>&1
 if %errorlevel% neq 0 (
-    echo This script requires administrative privileges.
+    echo This script requires administrative privileges to set up the DISPLAY environment variable for VcXsrv.
+    echo Kindly rerun the script as an Administrator.
     PAUSE
     exit /b 1
 )

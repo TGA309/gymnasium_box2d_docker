@@ -1,7 +1,7 @@
 # Use an official Python base image with version 3.11.9
 FROM python:3.11.9-slim
 
-# Install necessary libraries
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     cmake \
     g++ \
@@ -18,8 +18,6 @@ WORKDIR /workspace
 
 # Copy your project files into the container (including the src directory)
 COPY . /workspace
-
-RUN mkdir -p /tmp/runtime && chmod 777 /tmp/runtime
 
 # Check if requirements.txt exists and install dependencies
 RUN if [ -f /workspace/src/requirements.txt ]; then pip install -r /workspace/src/requirements.txt; fi
