@@ -33,13 +33,13 @@ if %errorlevel%==0 (
 )
 
 :: Define the installation path for VcXsrv
-set VCXSERV_PATH="C:\Program Files\VcXsrv\vcxsrv.exe"
+set VCXSERV_DOWNLOAD_PATH="C:\Program Files\VcXsrv\vcxsrv.exe"
 set TEMP_DIR=%CD%\vcxsrv_temp
 set TEMP_PATH=%TEMP_DIR%\vcxsrv-setup.exe
 set VCXSERV_URL="https://sourceforge.net/projects/vcxsrv/files/latest/download"
 
 :: Check if VcXsrv is installed locally
-if not exist %VCXSERV_PATH% (
+if not exist %VCXSERV_DOWNLOAD_PATH% (
     echo VcXsrv is not installed. Downloading and installing VcXsrv...
 
     :: Create the temporary directory in the current folder
@@ -62,7 +62,7 @@ if not exist %VCXSERV_PATH% (
     "%TEMP_PATH%" /S
 
     :: Check if installation was successful
-    if not exist %VCXSERV_PATH% (
+    if not exist %VCXSERV_DOWNLOAD_PATH% (
         echo Failed to install VcXsrv. Exiting...
         PAUSE
         exit /b 1
@@ -75,14 +75,17 @@ if not exist %VCXSERV_PATH% (
     rmdir /s /q "%TEMP_DIR%"
 )
 
-:: VcXsrv is installed but not in the PATH, adding to the system's PATH
+:: VcXsrv is installed but not in the system PATH, adding to the system's PATH
 echo VcXsrv is installed locally!
 echo.
-echo Adding VcXsrv to the user PATH...
-setx PATH "%PATH%;C:\Program Files\VcXsrv"
+echo Adding VcXsrv to the system PATH...
+set VCXSERV_SYSTEM_PATH="C:\Program Files\VcXsrv"
+powershell -Command "[Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';%VCXSERV_SYSTEM_PATH%', 'Machine')"
 
-:: Reload the environment variables in the current session (advanced workaround)
-for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v PATH') do set PATH=%%B
+:: Ask the user to restart the script after PATH update
+echo The system PATH has been updated. Please restart this script to apply changes.
+PAUSE
+exit /b 0
 
 :StartVcXsrv
 :: Check if VcXsrv is running
@@ -95,22 +98,25 @@ if not errorlevel 1 (
     echo VcXsrv stopped.
 )
 
-:: Get the system's IPv4 address
-for /f "tokens=2 delims=:" %%A in ('ipconfig ^| findstr "IPv4"') do (
-    for /f "tokens=1 delims= " %%B in ("%%A") do set IP=%%B
-)
-
-:: Write the DISPLAY variable with the system IP to the .env file
+:: Write the DISPLAY environment variable to the .env file
 echo Writing DISPLAY variable to .env file...
-echo DISPLAY=%IP%:0.0 > .env
+echo DISPLAY=:0 > .env
 
 :: Start VcXsrv
 echo Starting VcXsrv...
 start vcxsrv :0 -multiwindow -clipboard -wgl -ac
 
-:: Set DISPLAY environment variable
-echo Setting DISPLAY environment variable to %IP%:0.0
-setx DISPLAY %IP%:0.0
+:: Wait a moment to ensure VcXsrv starts
+timeout /t 5 >nul
+
+:: Check if VcXsrv is running
+tasklist /FI "IMAGENAME eq vcxsrv.exe" | find /I "vcxsrv.exe" >nul
+
+if errorlevel 1 (
+    echo Failed to start VcXsrv. Please check your configuration.
+) else (
+    echo VcXsrv started successfully.
+)
 
 PAUSE
 exit /b 0

@@ -5,10 +5,20 @@ FROM python:3.11.9-slim
 RUN apt-get update && apt-get install -y \
     cmake \
     g++ \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri \
+    libx11-xcb1 \
     python3-dev \
+    python3-opengl \
     swig \
+    xvfb \
     x11-apps \
-    && rm -rf /var/lib/apt/lists/*
+    libglib2.0-0 \
+    libglib2.0-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && ldconfig \
+    && ls -l /usr/lib/x86_64-linux-gnu/libGL.so* \
+    && ls -l /usr/lib/x86_64-linux-gnu/libgthread-2.0.so*
 
 # Install gymnasium and additional dependencies
 RUN pip install --upgrade pip

@@ -41,14 +41,27 @@ Install the following extensions from within Visual Studio Code:
 
 #### Windows Systems:
 
--   Run the `install_and_start_vcxsrv.bat` script as an **Administrator** to automatically install **VcXsrv**, add it to your user PATH, and configure the `DISPLAY` environment variable using your local IPv4 address.
+-   Run the `install_and_start_vcxsrv.bat` script as an **Administrator** to automatically install **VcXsrv**, add it to the system PATH, and configure the `DISPLAY` environment variable using your local IPv4 address.
     -   Ensure that you run this script from the Windows Terminal or Command Prompt, rather than using extensions like VSCode's batch runner, as these might cause unexpected issues.
+    -   You may need to run this script again after the system path is updated, as changes to the system path take effect only in new terminal sessions. Please carefully follow the prompts shown in the terminal after running the script.
     -   The script also handles restarting VcXsrv if it is already running.
     -   **VcXsrv** is required to forward graphical interfaces from the Docker container to your Windows environment.
 
 #### Linux Systems:
 
--   Run the `x11_forwarding_linux.sh` script to configure **X11 forwarding** on Linux-based systems.
+-   Before running the `x11_forwarding_linux.sh` script, ensure it has the correct permissions. You can do this by running the following command:
+
+    ```bash
+    chmod +x x11_forwarding_linux.sh
+    ```
+
+-   After making it executable, run the script with elevated privileges using `sudo`:
+
+    ```bash
+    sudo ./x11_forwarding_linux.sh
+    ```
+
+-   This will configure **X11 forwarding** on Linux-based systems.
 
 ### 4. Open the Repository in a Dev Container
 
@@ -64,6 +77,7 @@ Install the following extensions from within Visual Studio Code:
 -   Once the container is up and running, you can use the pre-installed Python 3.11.9 environment with Gymnasium and Box2D libraries.
 -   Any changes made to the `src` folder within the container will persist on your local filesystem.
 -   Whenever the repository is reopened as a Dev Container, any Python dependencies specified in `src/requirements.txt` will be automatically installed during the Docker container build process.
+-   When restarting or starting the container, ensure that **Docker Desktop** is running first. Then, run the appropriate script for your operating system: `install_and_start_vcxsrv.bat` for Windows or `x11_forwarding_linux.sh` for Linux. Once these are running, reopen the project in the container by pressing `Ctrl + Shift + P` to open the VSCode command palette, and select `Dev Containers: Reopen in Container`.
 
 ---
 
@@ -73,6 +87,17 @@ Install the following extensions from within Visual Studio Code:
 
 -   If Docker is not starting or encountering permission issues, refer to the official [Docker troubleshooting guide](https://docs.docker.com/docker-for-windows/troubleshoot/).
 -   For Visual Studio Code extension installation issues, consult the [VSCode Dev Containers documentation](https://code.visualstudio.com/docs/remote/containers).
+-   On **Windows**, if there are issues with automatically adding **VcXsrv** to the system path, you can manually add the following path to the system environment variables:
+
+    ```plaintext
+    C:\Program Files\VcXsrv
+    ```
+
+    To do this:
+
+    1. Open **System Properties** > **Advanced** > **Environment Variables**.
+    2. Under **System Variables**, find **Path**, click **Edit**, and add the above path.
+    3. Click **OK** to save and apply the changes.
 
 ### Graphical Output Issues on Windows
 
